@@ -1,0 +1,92 @@
+#!/usr/bin/python
+import time
+import smtplib
+import RPi.GPIO as io
+
+def door_is_open():
+#	global door_open
+	open_for = time.time() +30
+	while (io.input(door_pin) == 1):
+		if time.time() > open_for:
+#			alert_still_open()
+			print "alert_still_open()"
+			print "The timeout of %s was reached." % open_for
+			break
+		else:
+			time.sleep(.05)
+			print "Door still open"
+#	else:
+#		door_open = 0
+#		print "Door Closed again"
+
+
+def alert_opened():
+	sender = "cjeter@gmail.com"
+	recipient = "cjeter@gmail.com"
+	cc = "7856919005@txt.att.net"
+	email_subject = "SAFE ALART - DOOR OPEN"
+	email_body = "I've detected that the door of the safe is OPEN!"
+	headers = "\r\n".join([
+			"from: " + sender,
+			"subject: " + email_subject,
+			"to: " + recipient,
+			"cc: " + cc,
+			"mime-version: 1.0",
+			"content-type: text/html"])
+	toaddrs = [recipient, cc] 
+	content = headers + "\r\n\r\n" + email_body
+	try:
+		session = smtplib.SMTP('smtp.gmail.com',587)
+		session.set_debuglevel(0)
+		session.ehlo()
+		session.starttls()
+		session.ehlo()
+		session.login(sender,'vygqvutorvirnpsa')
+		session.sendmail(sender,toaddrs,content)
+		session.quit()
+	except smtplib.SMTPException:
+		print('Error')
+	return;
+
+def alert_still_open():
+	sender = "cjeter@gmail.com"
+	recipient = "cjeter@gmail.com"
+	cc = "7856919005@txt.att.net"
+	email_subject = "SAFE ALART - DOOR LEFT OPEN!" 
+	email_body = "I've detected that the door of the safe has been open for longer than 5 minutes"
+	headers = "\r\n".join([
+            "from: " + sender,
+            "subject: " + email_subject,
+            "to: " + recipient,
+            "cc: " + cc,
+            "mime-version: 1.0",
+            "content-type: text/html"])
+	toaddrs = [recipient, cc]
+	content = headers + "\r\n\r\n" + email_body
+	try:
+		session = smtplib.SMTP('smtp.gmail.com',587)
+		session.set_debuglevel(0)
+		session.ehlo()
+		session.starttls()
+		session.ehlo()
+		session.login(sender,'vygqvutorvirnpsa')
+		session.sendmail(sender,toaddrs,content)
+		session.quit()
+	except smtplib.SMTPException:
+		print('Error')
+	return;
+
+io.setmode(io.BCM)
+pir_pin = 18
+door_pin = 23
+io.setup(door_pin, io.IN, pull_up_down=io.PUD_UP)  # activate input with PullUp
+while True:
+	if io.input(door_pin):
+#		print("DOOR ALARM!")
+		time.sleep(.5)	
+#		door_open = 1
+		print "The door opened"
+#		alart_opened()
+#		break
+		door_is_open()	
+	time.sleep(.001)

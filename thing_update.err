@@ -1,0 +1,62 @@
+Temp=70.5*F  Humidity=47.5%
+Process Process-1:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 114, in run
+    self._target(*self._args, **self._kwargs)
+  File "safe_door.py", line 108, in monitor_temp
+    update_thing()
+  File "safe_door.py", line 55, in update_thing
+    conn.request("POST", "/update", params, headers)
+  File "/usr/lib/python2.7/httplib.py", line 962, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 996, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 958, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 818, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 780, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 1161, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 571, in create_connection
+    raise err
+error: [Errno 110] Connection timed out
+^CError in atexit._run_exitfuncs:
+Traceback (most recent call last):
+Process Process-2:
+  File "/usr/lib/python2.7/atexit.py", line 24, in _run_exitfuncs
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 114, in run
+    self._target(*self._args, **self._kwargs)
+  File "safe_door.py", line 94, in monitor_door
+    time.sleep(.1)
+KeyboardInterrupt
+    func(*targs, **kargs)
+  File "/usr/lib/python2.7/multiprocessing/util.py", line 295, in _exit_function
+    p.join()
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 145, in join
+    res = self._popen.wait(timeout)
+  File "/usr/lib/python2.7/multiprocessing/forking.py", line 148, in wait
+    return self.poll(0)
+  File "/usr/lib/python2.7/multiprocessing/forking.py", line 133, in poll
+    pid, sts = os.waitpid(self.pid, flag)
+KeyboardInterrupt
+Error in sys.exitfunc:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/atexit.py", line 24, in _run_exitfuncs
+    func(*targs, **kargs)
+  File "/usr/lib/python2.7/multiprocessing/util.py", line 295, in _exit_function
+    p.join()
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 145, in join
+    res = self._popen.wait(timeout)
+  File "/usr/lib/python2.7/multiprocessing/forking.py", line 148, in wait
+    return self.poll(0)
+  File "/usr/lib/python2.7/multiprocessing/forking.py", line 133, in poll
+    pid, sts = os.waitpid(self.pid, flag)
+KeyboardInterrupt
+

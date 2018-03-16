@@ -1,0 +1,12 @@
+import requests, ssl, logging
+def send_simple_message():
+	logging.captureWarnings(True)
+    	return requests.post(
+        "https://api.mailgun.net/v3/mg.kansashunter.org/messages",
+        auth=("api", "key-e7a8070aaf3649a7494f8333edf04e1b"),
+        data={"from": "Safe Monitor  <SafeMonitor@kansashunter.org>",
+              "to": ["cjeter+mailgun@gmail.com", "7856919005@txt.att.net"],
+              "subject": "SAFE ALART",
+              "text": "I've detected that the door has been open for longer that 5 minutes!"})
+
+send_simple_message()

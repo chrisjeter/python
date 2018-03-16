@@ -1,0 +1,65 @@
+#!/usr/bin/python
+import time, requests, logging, RPi.GPIO as io
+
+io.setmode(io.BCM)
+pir_pin = 18
+door_pin = 23
+io.setup(door_pin, io.IN, pull_up_down=io.PUD_UP)  # activate input with PullUp
+door = ""
+still_open = ""
+
+
+def alert(door_state):
+    request_url = "https://api.mailgun.net/v3/mg.kansashunter.org/messages"
+    api_key = "key-e7a8070aaf3649a7494f8333edf04e1b"
+    fromaddr = "Safe Monitor  <SafeMonitor@kansashunter.org>"
+    toaddr = ["cjeter+mailgun@gmail.com", "7856919005@txt.att.net"]
+    open_body = "The door to the safe has been OPENED!"
+    still_open_body = "The door to the safe has been OPENED \
+                       for longer than the TIMEOUT!"
+    logging.captureWarnings(True)
+    if (door_state == "open"):
+        return requests.post(
+        request_url,
+        auth=("api", api_key),
+        data={"from": fromaddr,
+              "to": toaddr,
+              "subject": "SAFE ALART",
+              "text": open_body})
+    elif (door_state == "still_open"):
+        return requests.post(
+        request_url,
+        auth=("api", api_key),
+        data={"from": fromaddr,
+              "to": toaddr,
+              "subject": "SAFE ALART",
+              "text": still_open_body})
+
+def door_is_open():
+    global still_open
+    open_for = time.time() +5
+    while (io.input(door_pin) == 1):
+        if time.time() > open_for:
+         #alert("still_open")
+            print "alert_still_open"
+            still_open = "yes"
+            break
+        else:
+            time.sleep(.5)
+            print "Door still open"
+    door = "closed"
+
+while True:
+    if io.input(door_pin) == 0:
+        door = "closed"
+        still_open = ""
+        time.sleep(.01)
+    elif io.input(door_pin) == 1:
+        door = "open"
+        if door == "open":
+            if still_open == "yes":
+                door_is_open()
+            elif still_open == "":
+                print "open"
+                door_is_open()
+    time.sleep(.001)
